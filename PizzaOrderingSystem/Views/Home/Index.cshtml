@@ -1,0 +1,686 @@
+﻿<html>
+<head>
+    <title>Angular JS Forms</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <style>
+        table, th, td {
+            border: 1px solid grey;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+
+            table tr:nth-child(odd) {
+                background-color: #f2f2f2;
+            }
+
+            table tr:nth-child(even) {
+                background-color: #ffffff;
+            }
+
+            td img {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+        .offer {
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body>
+    <h2>Pizza Builder</h2>
+    <div ng-app="mainApp" ng-controller="pizzaOrderController">
+        <div style="float:left;">
+            <table border="0" class="pizzaord">
+                <tr>
+                    <td>Pizza Sizes:</td>
+                    <td colspan="2">
+                        <input type="radio" name="pizzasize" value="small" ng-model="selectVal" /> Small<br />
+                        <input type="radio" name="pizzasize" value="medium" ng-model="selectVal" /> Medium<br />
+                        <input type="radio" name="pizzasize" value="large" ng-model="selectVal" /> Large<br />
+                        <input type="radio" name="pizzasize" value="extrlarge" ng-model="selectVal" /> Extra Large<br />
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><label>Veg Options</label></td>
+                    <td><label>Non Veg Options</label></td>
+                </tr>
+                <tr>
+                    <td>Toppings: </td>
+                    <td>
+                        <div ng-repeat="option in vegOptions">
+                            <input type="checkbox" ng-model="option.checked" name="veg" ng-value="option.Price" />
+                            {{ option.Name }}
+                        </div>
+                    </td>
+                    <td>
+                        <div ng-repeat="option in nonVegOptions">
+                            <input type="checkbox" ng-model="option.checked" name="nonveg" ng-value="option.Price" />
+                            {{ option.Name }}
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Select Quantity:
+                    </td>
+                    <td colspan="2">
+                        <select name="qty" ng-model="mdlQty">
+                            <option ng-repeat="option in qtyList" value="{{option.id}}">{{option.name}}</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="background-color:white;">
+                        <button ng-click="reset()">Reset</button>
+                    </td>
+                    <td style="background-color:white;">
+                        <button ng-click="submit()">Order Now</button>
+                    </td>
+                </tr>
+            </table>
+            <div>
+                <span ng-show="isChooseTopping" style="color:red;">Please choose Toppings.</span>
+            </div>
+        </div>
+        <div style="float:right;width:60%">
+            <table>
+                <tr>
+                    <td rowspan="2">
+                        <label> Toppings</label>
+                    </td>
+                    <td colspan="4" align="center"><label> Pizza Size</label></td>
+                </tr>
+                <tr>
+                    <td><label>Small($5)</label></td>
+                    <td><label>Medium($7)</label></td>
+                    <td><label>Large($8)</label></td>
+                    <td><label>Extra Large($9)</label></td>
+                </tr>
+                <tr>
+                    <td colspan="5"><label>Veg Toppings</label></td>
+                </tr>
+                <tr>
+                    <td>Tametoes ($1.00)</td>
+                    <td>
+                        <img ng-show="tametoes_small" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="tametoes_medium" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="tametoes_large" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="tametoes_extrlarge" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Onions ($0.50)</td>
+                    <td>
+                        <img ng-show="onions_small" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="onions_medium" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="onions_large" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="onions_extrlarge" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Bell Pepper($1.00)</td>
+                    <td>
+                        <img ng-show="bellpepper_small" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="bellpepper_medium" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="bellpepper_large" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="bellpepper_extrlarge" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Mushrooms ($1.20)</td>
+                    <td>
+                        <img ng-show="mushrooms_small" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="mushrooms_medium" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="mushrooms_large" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="mushrooms_extrlarge" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Pineapple ($0.75)</td>
+                    <td>
+                        <img ng-show="pineapple_small" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="pineapple_medium" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="pineapple_large" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="pineapple_extrlarge" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5"><label>Non Veg Toppings</label></td>
+                </tr>
+                <tr>
+                    <td>Sausage ($1.00)</td>
+                    <td>
+                        <img ng-show="sausage_small" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="sausage_medium" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="sausage_large" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="sausage_extrlarge" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Pepperoni ($2.00)</td>
+                    <td>
+                        <img ng-show="pepperoni_small" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="pepperoni_medium" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="pepperoni_large" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="pepperoni_extrlarge" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Barbecue Chicken ($3.00)</td>
+                    <td>
+                        <img ng-show="barbecue_small" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="barbecue_medium" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="barbecue_large" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                    <td>
+                        <img ng-show="barbecue_extrlarge" src="~/Images/checkimg.png" height="20" width="20" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5" style="background-color:lightblue;">
+                        <label>
+                            Total
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Offer</label></td>
+                    <td></td>
+                    <td>
+                        <div ng-show="isMediumOffer" ng-bind="offermid"></div>
+                    </td>
+                    <td>
+                        <div ng-show="isLargeOffer">Offer 3</div>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <span ng-show="isSmall">${{smallAmt}}</span>
+                    </td>
+                    <td>
+                        <div ng-show="isMedium" ng-class="(isMediumOffer) ? 'offer' : ''">${{mediumAmt}}</div>
+                        <div ng-show="isMediumOffer">${{mediumOfferAmt}}</div>
+                    </td>
+                    <td>
+                        <div ng-show="isLarge" ng-class="(isLargeOffer) ? 'offer' : ''">${{largeAmt}}</div>
+                        <div ng-show="isLargeOffer">${{largeOfferAmt}}</div>
+                    </td>
+                    <td>
+                        <span ng-show="isExtraLarge">${{extrlargeAmt}}</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    var mainApp = angular.module("mainApp", []);
+
+    mainApp.controller('pizzaOrderController', function ($scope) {
+        $scope.reset = function () {
+            $scope.qtyList = [
+                { id: 1, name: 1 },
+                { id: 2, name: 2 },
+                { id: 3, name: 3 },
+                { id: 4, name: 4 },
+                { id: 5, name: 5 }
+            ];
+            $scope.mdlQty = "1";
+
+            $scope.isChooseTopping = false;
+            $scope.selectVal = "medium";
+            $scope.pizzaSizes = [{
+                'id': 'small',
+                'Name': 'Small',
+                'Price': 5,
+                'checked': true
+            },
+            {
+                'id': 'medium',
+                'Name': 'Medium',
+                'Price': 7
+            },
+            {
+                'id': 'large',
+                'Name': 'Large',
+                'Price': 8
+            },
+            {
+                'id': 'extrlarge',
+                'Name': 'Extra Large',
+                'Price': 9
+            }
+            ];
+
+            $scope.vegOptions = [{
+                id: 'tametoes',
+                Name: 'Tametoes',
+                Price: 1,
+                checked: false
+            },
+            {
+                'id': 'onions',
+                'Name': 'Onions',
+                'Price': 0.50,
+                'checked': false
+            },
+            {
+                'id': 'bellpepper',
+                'Name': 'Bell Pepper',
+                'Price': 1,
+                'checked': false
+            },
+            {
+                'id': 'mushrooms',
+                'Name': 'Mushrooms',
+                'Price': 1.20,
+                'checked': false
+            },
+            {
+                'id': 'pineapple',
+                'Name': 'Pineapple',
+                'Price': 0.75,
+                'checked': false
+            }
+            ];
+
+            $scope.nonVegOptions = [{
+                'id': 'sausage',
+                'Name': 'Sausage',
+                'Price': 1
+            },
+            {
+                'id': 'pepperoni',
+                'Name': 'Pepperoni',
+                'Price': 2
+            },
+            {
+                'id': 'barbecue',
+                'Name': 'Barbecue Chicken',
+                'Price': 3
+            }
+            ];
+
+            $scope.tametoes_small = false;
+            $scope.tametoes_medium = false;
+            $scope.tametoes_large = false;
+            $scope.tametoes_extrlarge = false;
+
+            $scope.onions_small = false;
+            $scope.onions_medium = false;
+            $scope.onions_large = false;
+            $scope.onions_extrlarge = false;
+
+            $scope.bellpepper_small = false;
+            $scope.bellpepper_medium = false;
+            $scope.bellpepper_large = false;
+            $scope.bellpepper_extrlarge = false;
+
+            $scope.mushrooms_small = false;
+            $scope.mushrooms_medium = false;
+            $scope.mushrooms_large = false;
+            $scope.mushrooms_extrlarge = false;
+
+            $scope.pineapple_small = false;
+            $scope.pineapple_medium = false;
+            $scope.pineapple_large = false;
+            $scope.pineapple_extrlarge = false;
+
+            $scope.sausage_small = false;
+            $scope.sausage_medium = false;
+            $scope.sausage_large = false;
+            $scope.sausage_extrlarge = false;
+
+            $scope.pepperoni_small = false;
+            $scope.pepperoni_medium = false;
+            $scope.pepperoni_large = false;
+            $scope.pepperoni_extrlarge = false;
+
+            $scope.barbecue_small = false;
+            $scope.barbecue_medium = false;
+            $scope.barbecue_large = false;
+            $scope.barbecue_extrlarge = false;
+
+            $scope.isSmall = false;
+            $scope.isMedium = false;
+            $scope.isMediumOffer = false;
+            $scope.isLarge = false;
+            $scope.isLargeOffer = false;
+            $scope.isExtraLarge = false;
+        }
+        $scope.reset();
+
+        var mediumOffer, largeOffer;
+        $scope.submit = function (data) {
+            var pizzaSize = $scope.pizzaSizes.filter(f => f.id == $scope.selectVal)[0];
+            switch (pizzaSize.id) {
+                case "small":
+                    $scope.smallAmt = pizzaSize.Price;
+                    $scope.tametoes_small = false;
+                    $scope.onions_small = false;
+                    $scope.bellpepper_small = false;
+                    $scope.mushrooms_small = false;
+                    $scope.pineapple_small = false;
+                    $scope.sausage_small = false;
+                    $scope.pepperoni_small = false;
+                    $scope.barbecue_small = false;
+                    break;
+                case "medium":
+                    $scope.isMediumOffer = false;
+                    mediumOffer = 0;
+                    $scope.mediumAmt = pizzaSize.Price;
+                    $scope.tametoes_medium = false;
+                    $scope.onions_medium = false;
+                    $scope.bellpepper_medium = false;
+                    $scope.mushrooms_medium = false;
+                    $scope.pineapple_medium = false;
+                    $scope.sausage_medium = false;
+                    $scope.pepperoni_medium = false;
+                    $scope.barbecue_medium = false;
+                    break;
+                case "large":
+                    $scope.isLargeOffer = false;
+                    largeOffer = 0;
+                    $scope.largeAmt = pizzaSize.Price;
+                    $scope.tametoes_large = false;
+                    $scope.onions_large = false;
+                    $scope.bellpepper_large = false;
+                    $scope.mushrooms_large = false;
+                    $scope.pineapple_large = false;
+                    $scope.sausage_large = false;
+                    $scope.pepperoni_large = false;
+                    $scope.barbecue_large = false;
+                    break;
+                case "extrlarge":
+                    $scope.extrlargeAmt = pizzaSize.Price;
+                    $scope.tametoes_extrlarge = false;
+                    $scope.onions_extrlarge = false;
+                    $scope.bellpepper_extrlarge = false;
+                    $scope.mushrooms_extrlarge = false;
+                    $scope.pineapple_extrlarge = false;
+                    $scope.sausage_extrlarge = false;
+                    $scope.pepperoni_extrlarge = false;
+                    $scope.barbecue_extrlarge = false;
+                    break;
+            }
+
+            var checkedVegOption = $scope.vegOptions.filter(f => f.checked == true);
+            angular.forEach(checkedVegOption, function (value, key) {
+                if (value.id == "tametoes") {
+                    switch (pizzaSize.id) {
+                        case "small":
+                            $scope.smallAmt += value.Price;
+                            $scope.tametoes_small = true;
+                            break;
+                        case "medium":
+                            mediumOffer++;
+                            $scope.mediumAmt += value.Price;
+                            $scope.tametoes_medium = true;
+                            break;
+                        case "large":
+                            largeOffer++;
+                            $scope.largeAmt += value.Price;
+                            $scope.tametoes_large = true;
+                            break;
+                        case "extrlarge":
+                            $scope.extrlargeAmt += value.Price;
+                            $scope.tametoes_extrlarge = true;
+                            break;
+                    }
+                }
+                else if (value.id == "onions") {
+                    switch (pizzaSize.id) {
+                        case "small":
+                            $scope.smallAmt += value.Price;
+                            $scope.onions_small = true;
+                            break;
+                        case "medium":
+                            mediumOffer++;
+                            $scope.mediumAmt += value.Price;
+                            $scope.onions_medium = true;
+                            break;
+                        case "large":
+                            largeOffer++;
+                            $scope.largeAmt += value.Price;
+                            $scope.onions_large = true;
+                            break;
+                        case "extrlarge":
+                            $scope.extrlargeAmt += value.Price;
+                            $scope.onions_extrlarge = true;
+                            break;
+                    }
+                }
+                else if (value.id == "bellpepper") {
+                    switch (pizzaSize.id) {
+                        case "small":
+                            $scope.smallAmt += value.Price;
+                            $scope.bellpepper_small = true;
+                            break;
+                        case "medium":
+                            mediumOffer++;
+                            $scope.mediumAmt += value.Price;
+                            $scope.bellpepper_medium = true;
+                            break;
+                        case "large":
+                            largeOffer++;
+                            $scope.largeAmt += value.Price;
+                            $scope.bellpepper_large = true;
+                            break;
+                        case "extrlarge":
+                            $scope.extrlargeAmt += value.Price;
+                            $scope.bellpepper_extrlarge = true;
+                            break;
+                    }
+                }
+                else if (value.id == "mushrooms") {
+                    switch (pizzaSize.id) {
+                        case "small":
+                            $scope.smallAmt += value.Price;
+                            $scope.mushrooms_small = true;
+                            break;
+                        case "medium":
+                            mediumOffer++;
+                            $scope.mediumAmt += value.Price;
+                            $scope.mushrooms_medium = true;
+                            break;
+                        case "large":
+                            largeOffer++;
+                            $scope.largeAmt += value.Price;
+                            $scope.mushrooms_large = true;
+                            break;
+                        case "extrlarge":
+                            $scope.extrlargeAmt += value.Price;
+                            $scope.mushrooms_extrlarge = true;
+                            break;
+                    }
+                }
+                else if (value.id == "pineapple") {
+                    switch (pizzaSize.id) {
+                        case "small":
+                            $scope.smallAmt += value.Price;
+                            $scope.pineapple_small = true;
+                            break;
+                        case "medium":
+                            mediumOffer++;
+                            $scope.mediumAmt += value.Price;
+                            $scope.pineapple_medium = true;
+                            break;
+                        case "large":
+                            largeOffer++;
+                            $scope.largeAmt += value.Price;
+                            $scope.pineapple_large = true;
+                            break;
+                        case "extrlarge":
+                            $scope.extrlargeAmt += value.Price;
+                            $scope.pineapple_extrlarge = true;
+                            break;
+                    }
+                }
+            });
+
+            var checkedNonVegOption = $scope.nonVegOptions.filter(f => f.checked == true);
+            angular.forEach(checkedNonVegOption, function (value, key) {
+                if (value.id == "sausage") {
+                    switch (pizzaSize.id) {
+                        case "small":
+                            $scope.smallAmt += value.Price;
+                            $scope.sausage_small = true;
+                            break;
+                        case "medium":
+                            mediumOffer++;
+                            $scope.mediumAmt += value.Price;
+                            $scope.sausage_medium = true;
+                            break;
+                        case "large":
+                            largeOffer++;
+                            $scope.largeAmt += value.Price;
+                            $scope.sausage_large = true;
+                            break;
+                        case "extrlarge":
+                            $scope.extrlargeAmt += value.Price;
+                            $scope.sausage_extrlarge = true;
+                            break;
+                    }
+                }
+                else if (value.id == "pepperoni") {
+                    switch (pizzaSize.id) {
+                        case "small":
+                            $scope.smallAmt += value.Price;
+                            $scope.pepperoni_small = true;
+                            break;
+                        case "medium":
+                            mediumOffer++;
+                            $scope.mediumAmt += value.Price;
+                            $scope.pepperoni_medium = true;
+                            break;
+                        case "large":
+                            largeOffer = largeOffer + 2;
+                            $scope.largeAmt += value.Price;
+                            $scope.pepperoni_large = true;
+                            break;
+                        case "extrlarge":
+                            $scope.extrlargeAmt += value.Price;
+                            $scope.pepperoni_extrlarge = true;
+                            break;
+                    }
+                }
+                else if (value.id == "barbecue") {
+                    switch (pizzaSize.id) {
+                        case "small":
+                            $scope.smallAmt += value.Price;
+                            $scope.barbecue_small = true;
+                            break;
+                        case "medium":
+                            mediumOffer++;
+                            $scope.mediumAmt += value.Price;
+                            $scope.barbecue_medium = true;
+                            break;
+                        case "large":
+                            largeOffer = largeOffer + 2;
+                            $scope.largeAmt += value.Price;
+                            $scope.barbecue_large = true;
+                            break;
+                        case "extrlarge":
+                            $scope.extrlargeAmt += value.Price;
+                            $scope.barbecue_extrlarge = true;
+                            break;
+                    }
+                }
+            });
+
+            if (checkedVegOption.length == 0 && checkedNonVegOption.length == 0) {
+                $scope.isChooseTopping = true;
+            }
+            else {
+                //Calculate Offer with Qunatity
+                switch (pizzaSize.id) {
+                    case "small":
+                        $scope.isSmall = true;
+                        $scope.smallAmt = ($scope.smallAmt * parseInt($scope.mdlQty)).toFixed(2);
+                        break;
+                    case "medium":
+                        $scope.mediumAmt = ($scope.mediumAmt * parseInt($scope.mdlQty)).toFixed(2);
+                        $scope.isMedium = true;
+                        if (mediumOffer >= 2) {
+                            $scope.offermid = "Offer 1";
+                            $scope.isMediumOffer = true;
+                            $scope.mediumOfferAmt = (5 * parseInt($scope.mdlQty)).toFixed(2);
+                        }
+
+                        if (parseInt($scope.mdlQty) >= 2 && mediumOffer >= 4) {
+                            $scope.offermid = "Offer 2";
+                            $scope.isMediumOffer = true;
+                            $scope.mediumOfferAmt = (9 * parseInt($scope.mdlQty)).toFixed(2);
+                        }
+                        break;
+                    case "large":
+                        $scope.isLarge = true;
+                        $scope.largeAmt = ($scope.largeAmt * parseInt($scope.mdlQty)).toFixed(2);
+                        if (largeOffer >= 4) {
+                            $scope.isLargeOffer = true;
+                            $scope.largeOfferAmt = ($scope.largeAmt / 2).toFixed(2);
+                        }
+                        break;
+                    case "extrlarge":
+                        $scope.isExtraLarge = true;
+                        $scope.extrlargeAmt = ($scope.extrlargeAmt * parseInt($scope.mdlQty)).toFixed(2);
+                        break;
+                }
+                $scope.isChooseTopping = false;
+            }
+        };
+    });
+</script>
